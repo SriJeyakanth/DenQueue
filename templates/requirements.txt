@@ -1,0 +1,6 @@
+flask==2.0.3
+google-generativeai==1.0.0 
+sqlite3==2.6.0
+
+
+#pip install -r requirements.txt    itha kuduthu requirements install pannikonga anna .appo than flask app work aagum.
