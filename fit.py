@@ -21,8 +21,9 @@ predefined_responses = {
     "❤️": "Love is in the air! 😊",
     
     "calculate bmi": "Please provide your weight (kg) and height (cm) to calculate BMI. Formula: BMI = weight / (height * height) in meters.",
+    "calculate my bmi": "Please provide your weight (kg) and height (cm) to calculate BMI. Formula: BMI = weight / (height * height) in meters.",
     
-    "calculate bmr (male)": "BMR Formula for men: BMR = 88.36 + (13.4 × weight in kg) + (4.8 × height in cm) − (5.7 × age in years).",
+    "calculate bmr (male)": "BMR Formula for men: BMR = 88.36 + (13.4 * weight in kg) + (4.8 * height in cm) - (5.7 × age in years).",
     
     "calculate bmr (female)": "BMR Formula for women: BMR = 447.6 + (9.2 × weight in kg) + (3.1 × height in cm) − (4.3 × age in years).",
     
@@ -100,38 +101,38 @@ predefined_responses = {
     
     "calculate anion gap": "Anion Gap Formula: AG = Na - (Cl + HCO3). Normal: 8-16 mEq/L.",
     
-    "calculate corrected sodium": "Corrected Na Formula: Measured Na + [0.016 × (Glucose - 100)].",
+    "calculate corrected sodium": "Corrected Na Formula: Measured Na + [0.016 * (Glucose - 100)].",
     
     "calculate QTc interval": "QTc Formula: QT / √(RR interval in seconds). Normal: <440 ms.",
     
-    "calculate GFR (glomerular filtration rate)": "GFR Formula: GFR = [(140 - Age) × Weight (kg)] / (72 × Serum Creatinine). For females, multiply by 0.85.",
+    "calculate GFR (glomerular filtration rate)": "GFR Formula: GFR = [(140 - Age) * Weight (kg)] / (72 * Serum Creatinine). For females, multiply by 0.85.",
     #Sports 
     
     "calculate sprint speed": "Speed Formula: Speed = Distance / Time. Example: 100m in 10s → Speed = 10 m/s.",
     
     "calculate batting average": "Batting Average Formula: Hits / At-Bats.",
     
-    "calculate field goal percentage": "FG% Formula: (Field Goals Made / Field Goals Attempted) × 100.",
+    "calculate field goal percentage": "FG% Formula: (Field Goals Made / Field Goals Attempted) * 100.",
     
-    "calculate pitching ERA (earned run average)": "ERA Formula: (Earned Runs × 9) / Innings Pitched.",
+    "calculate pitching ERA (earned run average)": "ERA Formula: (Earned Runs * 9) / Innings Pitched.",
     
-    "calculate shooting percentage in basketball": "Shooting % Formula: (Made Shots / Attempted Shots) × 100.",
+    "calculate shooting percentage in basketball": "Shooting % Formula: (Made Shots / Attempted Shots) * 100.",
     
-    "calculate soccer shot accuracy": "Shot Accuracy Formula: (Shots on Target / Total Shots) × 100.",
+    "calculate soccer shot accuracy": "Shot Accuracy Formula: (Shots on Target / Total Shots) * 100.",
     
     "calculate baseball slugging percentage": "Slugging % Formula: (Total Bases / At-Bats).",
     
     "calculate swimming lap speed": "Lap Speed Formula: Distance / Time per Lap.",
     
-    "calculate force in weightlifting": "Force Formula: Mass × Acceleration (F = ma).",
+    "calculate force in weightlifting": "Force Formula: Mass * Acceleration (F = ma).",
     
-    "calculate kinetic energy of a moving ball": "Kinetic Energy Formula: KE = 0.5 × Mass × Velocity².",
+    "calculate kinetic energy of a moving ball": "Kinetic Energy Formula: KE = 0.5 * Mass * Velocity².",
     
-    "calculate reaction time": "Reaction Time Formula: √(2 × Distance / Acceleration due to Gravity).",
+    "calculate reaction time": "Reaction Time Formula: √(2 * Distance / Acceleration due to Gravity).",
     
-    "calculate vertical jump height": "Jump Height Formula: H = (Velocity²) / (2 × Gravity).",
+    "calculate vertical jump height": "Jump Height Formula: H = (Velocity²) / (2 * Gravity).",
     
-    "calculate cycling power output": "Power Formula: Force × Velocity. Example: 300N × 5m/s = 1500W.",
+    "calculate cycling power output": "Power Formula: Force * Velocity. Example: 300N * 5m/s = 1500W.",
     
     "calculate rowing stroke rate": "Stroke Rate Formula: Strokes per minute.",
     
@@ -210,7 +211,7 @@ predefined_responses = {
     "is this AI free to use?": "Fitness Tech-AI offers both free and premium features for users.",
     "how does AI help in sports performance?": "It tracks movement efficiency, provides corrective feedback, and optimizes training techniques.",
     "does AI help in preventing sports injuries?": "Yes! AI detects movement imbalances and suggests corrections to prevent injuries.",
-    "who leads the Fitness Tech-AI team?": "denQueue’s team of AI engineers and fitness experts lead the development of Fitness Tech-AI.",
+    "who leads the Fitness Tech-AI team?": "denQueue ! The team of AI engineers and fitness experts lead the development of Fitness Tech-AI.",
     "who are the developers behind this app?": "The skilled professionals at denQueue developed this AI to transform fitness training.",
     "what is the mission of denQueue?": "denQueue aims to revolutionize fitness with AI-powered coaching and injury prevention.",
     "how does denQueue innovate in fitness?": "denQueue integrates AI with fitness science to create next-level training solutions.",
@@ -228,19 +229,19 @@ predefined_responses = {
 
     #OTHER MATHEMATICAL STUFFS
     
-    "calculate hydration needs": "Hydration Formula: Weight (kg) × 0.033 = Liters per day.",
+    "calculate hydration needs": "Hydration Formula: Weight (kg) * 0.033 = Liters per day.",
     
     "calculate basal temperature increase during fever": "Normal body temperature: 36.1 - 37.2°C. Fever: >38°C.",
     
-    "calculate optimal stride length for running": "Stride Length Formula: Height × 0.41 for men, Height × 0.38 for women.",
+    "calculate optimal stride length for running": "Stride Length Formula: Height * 0.41 for men, Height * 0.38 for women.",
     
-    "calculate maximum power output in sprinting": "Power Output = (Force × Distance) / Time.",
+    "calculate maximum power output in sprinting": "Power Output = (Force * Distance) / Time.",
     
-    "calculate tennis ball impact force": "Impact Force Formula: (Mass × Change in Velocity) / Time of Impact.",
+    "calculate tennis ball impact force": "Impact Force Formula: (Mass * Change in Velocity) / Time of Impact.",
     
-    "calculate body hydration deficit": "Hydration Deficit Formula: (Weight Loss in kg) × 1.5 = Liters needed.",
+    "calculate body hydration deficit": "Hydration Deficit Formula: (Weight Loss in kg) * 1.5 = Liters needed.",
     
-    "calculate maximum lifting capacity": "Strength Formula: Force = Mass × Acceleration.",
+    "calculate maximum lifting capacity": "Strength Formula: Force = Mass * Acceleration.",
     
     "calculate fatigue rate": "Fatigue Rate = Power Output / Time until Exhaustion.",
     
@@ -284,14 +285,14 @@ predefined_responses = {
     "how to train for endurance?": "Increase workout duration gradually and focus on stamina-building exercises.",
     "how to train for strength?": "Lift heavier weights with lower reps and focus on compound exercises.",
     "does lifting weights make you bulky?": "No, it depends on diet and training. Strength training helps tone muscles.",
-    "can I work out on an empty stomach?": "Fasted workouts can burn fat, but it’s best to have a light meal before intense training.",
+    "can I work out on an empty stomach?": "Fasted workouts can burn fat, but it is best to have a light meal before intense training.",
     "how do I improve flexibility?": "Regular stretching, yoga, and mobility drills help improve flexibility.",
     "how does Fitness Tech-AI provide workout plans?": "It analyzes your fitness level and goals to create a personalized plan.",
     "what is the importance of core strength?": "A strong core improves stability, posture, and overall performance.",
     "does Fitness Tech-AI support sports training?": "Yes! It provides real-time feedback for sports-specific training.",
     "how to stay injury-free?": "Warm up properly, use correct form, and allow adequate recovery.",
     "how to fix bad posture?": "Practice exercises that strengthen your back and core muscles.",
-    "what is overtraining?": "Overtraining occurs when you don’t allow your body enough time to recover, leading to fatigue.",
+    "what is overtraining?": "Overtraining occurs when you do not allow your body enough time to recover, leading to fatigue.",
     "should I take protein supplements?": "Whole foods are best, but protein supplements can help meet protein requirements.",
     "how do I stay motivated?": "Set small goals, track progress, and remind yourself why you started!",
     "how does real-time posture correction work?": "AI analyzes your form during workouts and provides instant feedback.",
@@ -400,3 +401,4 @@ def get_chat(chat_id):
 
 if __name__ == '__main__':
     app.run(debug=True)
+
