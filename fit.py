@@ -11,8 +11,17 @@ ai.configure(api_key=API_KEY)
 model = ai.GenerativeModel("gemini-pro")
 chat = model.start_chat()
 
+# Store user data in memory (you can use a database for persistence)
+user_data = {}
+
+# Predefined responses
 predefined_responses = {
+    "hi":"Hi! I am Fitness Tech-AI, your personal fitness assistant, developed by denQueue 😊.How can i assist you today?",
     "who are you": "I am Fitness Tech-AI, your personal fitness assistant, developed by denQueue 😊",
+    "who are u": "I am Fitness Tech-AI, your personal fitness assistant, developed by denQueue 😊",
+    "who are u?": "I am Fitness Tech-AI, your personal fitness assistant, developed by denQueue 😊",
+    "who r u": "I am Fitness Tech-AI, your personal fitness assistant, developed by denQueue 😊",
+    "who r u?": "I am Fitness Tech-AI, your personal fitness assistant, developed by denQueue 😊",
     "who are you?": "I am Fitness Tech-AI, your personal fitness assistant, developed by denQueue 😊",
     "what is your name": "I am Fitness Tech-AI, your personal fitness assistant, developed by denQueue 😊",
     "what is your name?": "I am Fitness Tech-AI, your personal fitness assistant, developed by denQueue 😊",
@@ -308,6 +317,7 @@ predefined_responses = {
 
 }
 
+
 def get_db_connection():
     conn = sqlite3.connect('interactions.db')
     conn.row_factory = sqlite3.Row
@@ -338,6 +348,12 @@ def handle_message(message):
 def home():
     return render_template('good.html')
 
+@app.route('/update-user-data', methods=['POST'])
+def update_user_data():
+    data = request.json
+    user_data.update(data)
+    return jsonify(success=True)
+
 @app.route('/chat', methods=['POST'])
 def chat_response():
     user_message = request.form['message']
@@ -353,6 +369,126 @@ def chat_response():
             response_text = "Please provide your weight (kg) and height (cm) separated by a space. Example: 'BMI 70 175'"
     else:
         response_text = send_message_with_retry(chat, user_message)
+
+    # Customize response based on user data
+    if user_data:
+        height = float(user_data.get('height', 0))
+        weight = float(user_data.get('weight', 0))
+        age = int(user_data.get('age', 0))
+        day = int(user_data.get('day', 0))
+
+        # Calculate BMI
+        bmi = weight / ((height / 100) ** 2) if height > 0 else 0
+
+        # Respond to specific queries
+        if "give my physical data" in user_message.lower():
+            response_text = (
+                "According to Fitness Tech-AI, here are your physical details: 📊\n"
+                f"- Height: {height} cm 📏\n"
+                f"- Weight: {weight} kg ⚖️\n"
+                f"- Age: {age} years 🎂\n"
+                f"- Day of Workout: Day {day} 🗓️"
+            )
+
+        elif "what is my day" in user_message.lower():
+            response_text = f"According to Fitness Tech-AI, you are on Day {day} of your workout plan. 🗓️"
+
+        elif "what is my weight" in user_message.lower():
+            response_text = f"According to Fitness Tech-AI, your weight is {weight} kg. ⚖️"
+
+        elif "what is my height" in user_message.lower():
+            response_text = f"According to Fitness Tech-AI, your height is {height} cm. 📏"
+
+        elif "provide me a workout plan" in user_message.lower():
+            response_text = (
+                f"According to Fitness Tech-AI, here is your workout plan for Day {day}: 💪\n"
+                "- Warm-up: 10 minutes of light cardio 🏃‍♂️\n"
+                "- Strength Training: 3 sets of squats, push-ups, and lunges 🏋️‍♂️\n"
+                "- Cardio: 20 minutes of running or cycling 🚴‍♂️\n"
+                "- Cool-down: 5 minutes of stretching 🧘‍♂️"
+            )
+
+        elif "suggest me some foods" in user_message.lower() or "what are the foods i need to take" in user_message.lower():
+            if bmi < 18.5:
+                response_text = (
+                    f"According to Fitness Tech-AI, since your BMI is {bmi:.2f} (underweight), "
+                    "you should focus on calorie-dense foods like: 🥑🍗\n"
+                    "- Nuts and seeds 🌰\n"
+                    "- Avocados 🥑\n"
+                    "- Whole grains 🌾\n"
+                    "- Lean proteins (chicken, fish, tofu) 🍗🐟\n"
+                    "- Dairy products (milk, cheese, yogurt) 🧀🥛\n"
+                    "- Healthy fats (olive oil, coconut oil) 🫒🥥\n"
+                    "- Frequent meals and healthy snacks throughout the day 🍽️\n"
+                    "- Strength training to build muscle mass 💪\n"
+                    "Remember, Fitness Tech-AI encourages you to gradually increase your calorie intake and focus on nutrient-rich foods. You’ve got this! 🌟✨"
+                )
+
+            elif 18.5 <= bmi <= 24.9:
+               response_text = (
+                    f"According to Fitness Tech-AI, since your BMI is {bmi:.2f} (healthy), "
+                    "you’re doing great! Keep up the good work by maintaining a balanced diet: 🥗🍎\n"
+                    "- Fruits and vegetables 🍎🥦\n"
+                    "- Whole grains 🌾\n"
+                    "- Lean proteins 🍗\n"
+                    "- Healthy fats (olive oil, nuts) 🫒🌰\n"
+                    "- Regular physical activity: Aim for at least 30 minutes of exercise most days of the week 🏃‍♂️\n"
+                    "- Hydration: Drink plenty of water to stay hydrated 💧\n"
+                    "- Restful sleep: Aim for 7-8 hours of quality sleep each night 🛌\n"
+                    "- Stress management: Practice stress-reducing activities like yoga 🧘‍♂️ or meditation 🧘‍♀️\n"
+                    "Fitness Tech-AI is proud of you! Keep shining and maintaining your healthy lifestyle! 🌟✨👏"
+                )
+
+            elif 25 <= bmi <= 29.9:
+               response_text = (
+                    f"According to Fitness Tech-AI, since your BMI is {bmi:.2f} (overweight), "
+                    "you should focus on: 🥗🏃‍♂️\n"
+                    "- Low-calorie, nutrient-dense foods 🥦\n"
+                    "- Lean proteins 🍗\n"
+                    "- Whole grains 🌾\n"
+                    "- Plenty of vegetables 🥕\n"
+                    "- Regular physical activity: Aim for at least 30 minutes of exercise most days of the week 🏃‍♂️\n"
+                    "- Hydration: Drink plenty of water to stay hydrated 💧\n"
+                    "- Controlled portions: Be mindful of portion sizes to avoid overeating 🍽️\n"
+                    "- Healthy snacks: Choose nutritious snacks like nuts 🥜, yogurt 🥣, and fruits 🍏\n"
+                    "- Restful sleep: Aim for 7-8 hours of quality sleep each night 🛌\n"
+                    "- Stress management: Practice stress-reducing activities like yoga 🧘‍♂️ or meditation 🧘‍♀️\n"
+                    "- Consistency: Stay dedicated to your routine and be patient. Progress takes time but every step counts ⏳\n"
+                    "Remember, Fitness Tech-AI believes you can achieve your goals! 🌟✨"
+                )
+
+            else:
+                response_text = (
+                    f"According to Fitness Tech-AI, since your BMI is {bmi:.2f} (obese), "
+                    "you should focus on: 🥗🏋️‍♂️\n"
+                    "- Low-calorie, nutrient-dense foods 🥦\n"
+                    "- Lean proteins 🍗\n"
+                    "- Whole grains 🌾\n"
+                    "- Plenty of vegetables 🥕\n"
+                    "- Consult a healthcare professional for personalized advice 🩺"
+                    "- Start slow: Begin with gentle exercises like walking 🚶‍♂️, water aerobics 🏊‍♀️, or chair exercises. Gradually increase your activity level.\n"
+                    "- Nutrient-rich diet: Focus on whole foods 🌾, lean proteins 🍗, and plenty of fiber-rich veggies 🥦 and fruits 🍇. Limit intake of high-calorie, sugary, and processed foods 🍔.\n"
+                    "- Hydration: Drink plenty of water 💧 to help manage your appetite and support your metabolism.\n"
+                    "- Controlled portions: Be vigilant about portion sizes 🍽️. Smaller, balanced meals can help you feel full while managing calorie intake.\n"
+                    "- Healthy alternatives: Opt for nutritious snacks like nuts 🥜, yogurt 🥣, and fruits 🍏 instead of high-calorie, low-nutrient options.\n"
+                    "- Restful sleep: Aim for 7-9 hours of quality sleep 🛌 each night. Poor sleep can hinder weight loss efforts.\n"
+
+
+                )
+
+        elif "am i fat" in user_message.lower() or "am i lean" in user_message.lower() or "am i fit" in user_message.lower() or "am i normal" in user_message.lower():
+            if bmi < 18.5:
+                response_text = ( "According to Fitness Tech-AI, you are underweight. Consider increasing your calorie intake and focusing on strength training. 💪")
+            elif 18.5 <= bmi <= 24.9:
+                response_text = "According to Fitness Tech-AI, you are in the healthy range. Keep up the good work! 👏"
+            elif 25 <= bmi <= 29.9:
+                response_text = "According to Fitness Tech-AI, you are overweight. Consider a balanced diet and regular exercise. 🏃‍♂️"
+            else:
+                response_text = "According to Fitness Tech-AI, you are obese. It's important to consult a healthcare professional and focus on a healthy lifestyle. 🩺"
+
+        elif "how much weight i should carry" in user_message.lower():
+            ideal_weight = 21.75 * ((height / 100) ** 2)  # Ideal BMI is 21.75
+            response_text = f"According to Fitness Tech-AI, your ideal weight should be around {ideal_weight:.2f} kg. ⚖️"
 
     response_chunks = [response_text[i:i+500] for i in range(0, len(response_text), 500)]
     save_interaction(user_message, response_text)
@@ -374,11 +510,8 @@ def send_message_with_retry(chat, user_message, retries=3, delay=2):
             if any(word in response.text.lower() for word in ["gemini", "google"]):
                 response.text = "I am Fitness Tech-AI, your personal fitness assistant, developed by denQueue 😊"
             return response.text
-        except ai.errors.ApiError as api_err:
-            app.logger.error(f"API Error on attempt {attempt + 1}: {api_err}")
-            time.sleep(delay)
-        except Exception as e:
-            app.logger.error(f"General Error on attempt {attempt + 1}: {e}")
+        except Exception as e:  # Catch all exceptions
+            app.logger.error(f"Error on attempt {attempt + 1}: {e}")
             time.sleep(delay)
     return "Sorry, something went wrong. Please try again."
 
@@ -401,4 +534,3 @@ def get_chat(chat_id):
 
 if __name__ == '__main__':
     app.run(debug=True)
-
