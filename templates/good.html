@@ -51,14 +51,14 @@
             transition: color 0.3s ease, border-color 0.3s ease;
             font-family: 'Merriweather', serif;
         }
-        .header::after {
-    content: '❚█══█❚'; /* Dumbbell emoji */
-    font-size: 0.8em; /* Smaller size */
-    display: block;
-    text-align: center;
-    margin-top: 5px; /* Space between title and emoji */
-}
 
+        .header::after {
+            content: '❚█══█❚'; /* Dumbbell emoji */
+            font-size: 0.8em; /* Smaller size */
+            display: block;
+            text-align: center;
+            margin-top: 5px; /* Space between title and emoji */
+        }
 
         body.dark-mode .header {
             color: #f5f5f5;
@@ -278,8 +278,30 @@
             opacity: 0.8;
         }
 
-                /* Chat History */
-                .chat-history {
+        /* Form Button */
+        .form-button {
+            position: fixed;
+            top: 20px;
+            left: 60px; /* Adjust this value to position it next to the history button */
+            background: none;
+            border: none;
+            cursor: pointer;
+            font-size: 24px;
+            color: #3498db;
+            transition: color 0.3s ease;
+            z-index: 1000;
+        }
+
+        body.dark-mode .form-button {
+            color: #2ecc71;
+        }
+
+        .form-button:hover {
+            opacity: 0.8;
+        }
+
+        /* Chat History */
+        .chat-history {
             display: none;
             position: absolute;
             top: 50px;
@@ -319,6 +341,49 @@
         body.dark-mode .chat-history-item:hover {
             background-color: #444;
         }
+
+        /* Modal Styles */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+
+        .modal-content {
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 10px;
+            width: 300px;
+            text-align: center;
+        }
+
+        .modal-content input {
+            width: 100%;
+            padding: 10px;
+            margin: 10px 0;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+
+        .modal-content button {
+            background-color: #4CAF50;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        .modal-content button:hover {
+            background-color: #45a049;
+        }
     </style>
 </head>
 <body>
@@ -330,6 +395,23 @@
     <button class="history-button" id="history-button">
         📜
     </button>
+
+    <!-- Form Button -->
+    <button class="form-button" id="form-button">
+        📅
+    </button>
+
+    <!-- Form Modal -->
+    <div id="form-modal" class="modal">
+        <div class="modal-content">
+            <h2>User Details</h2>
+            <input type="number" id="height" placeholder="Height (in cms)">
+            <input type="number" id="weight" placeholder="Weight (in kgs)">
+            <input type="number" id="age" placeholder="Age">
+            <input type="number" id="day" placeholder="Day of Workout (1-30)">
+            <button onclick="submitForm()">Submit</button>
+        </div>
+    </div>
 
     <div class="chat-container" id="chat-container">
         <div class="header">Fitness Tech-AI</div>
@@ -347,150 +429,235 @@
     <div id="chat-history" class="chat-history"></div>
 
     <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            const modeToggle = document.getElementById('mode-toggle');
-            const modeIcon = document.getElementById('mode-icon');
-            const historyButton = document.getElementById('history-button');
-            const chatHistory = document.getElementById('chat-history');
-            const body = document.body;
+      document.addEventListener('DOMContentLoaded', function() {
+    const modeToggle = document.getElementById('mode-toggle');
+    const modeIcon = document.getElementById('mode-icon');
+    const historyButton = document.getElementById('history-button');
+    const formButton = document.getElementById('form-button');
+    const chatHistory = document.getElementById('chat-history');
+    const formModal = document.getElementById('form-modal');
+    const body = document.body;
+    chatHistory.style.display = 'none';
+    
+    function toggleMode() {
+        body.classList.toggle('dark-mode');
+        if (body.classList.contains('dark-mode')) {
+            modeIcon.textContent = '☀️';
+        } else {
+            modeIcon.textContent = '🌙';
+        }
+    }
 
-            function toggleMode() {
-                body.classList.toggle('dark-mode');
-                if (body.classList.contains('dark-mode')) {
-                    modeIcon.textContent = '☀️';
+    function toggleHistory() {
+        chatHistory.style.display = chatHistory.style.display === 'none' ? 'block' : 'none';
+        if (chatHistory.style.display === 'block') {
+            loadChatHistory();
+        }
+    }
+
+    function toggleFormModal() {
+        formModal.style.display = formModal.style.display === 'none' ? 'flex' : 'none';
+    }
+
+    function submitForm() {
+        const height = document.getElementById('height').value;
+        const weight = document.getElementById('weight').value;
+        const age = document.getElementById('age').value;
+        const day = document.getElementById('day').value;
+
+        if (height && weight && age && day) {
+            fetch('/update-user-data', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ height, weight, age, day }),
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    alert('User data updated successfully!');
+                    formModal.style.display = 'none';
                 } else {
-                    modeIcon.textContent = '🌙';
+                    alert('Failed to update user data.');
                 }
-            }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('An error occurred while updating user data.');
+            });
+        } else {
+            alert('Please fill all fields.');
+        }
+    }
 
-            function toggleHistory() {
-                chatHistory.style.display = chatHistory.style.display === 'none' ? 'block' : 'none';
-                if (chatHistory.style.display === 'block') {
-                    loadChatHistory();
-                }
-            }
+    function showReminder() {
+        const formButton = document.getElementById('form-button');
+        const reminder = document.createElement('div');
+        reminder.className = 'reminder';
+        reminder.innerHTML = `🌟 <span>Update your physical data to get precise assistance!</span> 📅`;
+        reminder.style.position = 'absolute';
+        reminder.style.top = `${formButton.offsetTop + formButton.offsetHeight + 20}px`;
+        reminder.style.left = `${formButton.offsetLeft}px`;
+        reminder.style.backgroundColor = 'yellow';
+        reminder.style.padding = '10px';
+        reminder.style.borderRadius = '5px';
+        reminder.style.boxShadow = '0 0 10px rgba(0, 0, 0, 0.5)';
+        reminder.style.opacity = '0';
+        reminder.style.transition = 'opacity 0.5s, transform 0.5s';
+        reminder.style.transform = 'scale(0.5)';
 
-            modeToggle.addEventListener('click', toggleMode);
-            modeToggle.addEventListener('touchend', toggleMode); // Handle touch events
+        document.body.appendChild(reminder);
 
-            historyButton.addEventListener('click', toggleHistory);
-            historyButton.addEventListener('touchend', toggleHistory); // Handle touch events
+        setTimeout(() => {
+            reminder.style.opacity = '1';
+            reminder.style.transform = 'scale(1)';
+        }, 100);
 
-            function sendMessage() {
-                let userInput = document.getElementById('user-input').value;
-                if (!userInput.trim()) return;
+        setTimeout(() => {
+            reminder.style.opacity = '0';
+            reminder.style.transform = 'scale(0.5)';
+            setTimeout(() => {
+                document.body.removeChild(reminder);
+            }, 1000);
+        }, 5000);
+    }
 
-                let chatBox = document.getElementById('chat-box');
-                let userMessage = document.createElement('div');
-                userMessage.className = 'message user-message';
-                userMessage.textContent = userInput;
-                chatBox.appendChild(userMessage);
+    modeToggle.addEventListener('click', toggleMode);
+    modeToggle.addEventListener('touchend', toggleMode);
 
-                let loadingIndicator = document.getElementById('loading-indicator');
-                loadingIndicator.style.display = 'block';
+    historyButton.addEventListener('click', toggleHistory);
+    historyButton.addEventListener('touchend', toggleHistory);
 
-                fetch('/chat', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/x-www-form-urlencoded',
-                    },
-                    body: 'message=' + encodeURIComponent(userInput),
-                })
-                .then(response => response.json())
-                .then(data => {
-                    loadingIndicator.style.display = 'none';
+    formButton.addEventListener('click', toggleFormModal);
+    formButton.addEventListener('touchend', toggleFormModal);
 
-                    let botMessage = document.createElement('div');
-                    botMessage.className = 'message bot-message';
-                    chatBox.appendChild(botMessage);
+    window.addEventListener('click', function(event) {
+        if (event.target === formModal) {
+            formModal.style.display = 'none';
+        }
+    });
 
-                    let responseText = data.response;
-                    let index = 0;
-                    let typingSpeed = 5;
+    function sendMessage() {
+        let userInput = document.getElementById('user-input').value;
+        if (!userInput.trim()) return;
 
-                    function typeMessage() {
-                        if (index < responseText.length) {
-                            if (responseText.charAt(index) === '*' && responseText.charAt(index + 1) === '*') {
-                                let end = responseText.indexOf('**', index + 2);
-                                if (end !== -1) {
-                                    botMessage.innerHTML += '<div class="main-topic">' + responseText.slice(index + 2, end) + '</div>';
-                                    index = end + 2;
-                                }
-                            } else if (responseText.charAt(index) === '*' && responseText.charAt(index + 1) !== '*') {
-                                let end = responseText.indexOf('*', index + 1);
-                                if (end !== -1) {
-                                    botMessage.innerHTML += '<div class="sub-topic">' + responseText.slice(index + 1, end) + '</div>';
-                                    index = end + 1;
-                                }
-                            } else if (responseText.charAt(index) === '-' && responseText.charAt(index + 1) === ' ') {
-                                let end = responseText.indexOf('\n', index);
-                                if (end !== -1) {
-                                    botMessage.innerHTML += '<div class="normal-text">• ' + responseText.slice(index + 2, end) + '</div>';
-                                    index = end + 1;
-                                }
-                            } else {
-                                botMessage.innerHTML += responseText.charAt(index);
-                                index++;
-                            }
+        let chatBox = document.getElementById('chat-box');
+        let userMessage = document.createElement('div');
+        userMessage.className = 'message user-message';
+        userMessage.textContent = userInput;
+        chatBox.appendChild(userMessage);
+
+        let loadingIndicator = document.getElementById('loading-indicator');
+        loadingIndicator.style.display = 'block';
+
+        fetch('/chat', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded',
+            },
+            body: 'message=' + encodeURIComponent(userInput),
+        })
+        .then(response => response.json())
+        .then(data => {
+            loadingIndicator.style.display = 'none';
+
+            let botMessage = document.createElement('div');
+            botMessage.className = 'message bot-message';
+            chatBox.appendChild(botMessage);
+
+            let responseText = data.response;
+            let index = 0;
+            let typingSpeed = 5;
+
+            function typeMessage() {
+                if (index < responseText.length) {
+                    if (responseText.charAt(index) === '*' && responseText.charAt(index + 1) === '*') {
+                        let end = responseText.indexOf('**', index + 2);
+                        if (end !== -1) {
+                            botMessage.innerHTML += '<div class="main-topic">' + responseText.slice(index + 2, end) + '</div>';
+                            index = end + 2;
                         }
-                        setTimeout(typeMessage, typingSpeed);
-
-                        if (chatBox.scrollTop + chatBox.clientHeight >= chatBox.scrollHeight - 10) {
-                            chatBox.scrollTop = chatBox.scrollHeight;
+                    } else if (responseText.charAt(index) === '*' && responseText.charAt(index + 1) !== '*') {
+                        let end = responseText.indexOf('*', index + 1);
+                        if (end !== -1) {
+                            botMessage.innerHTML += '<div class="sub-topic">' + responseText.slice(index + 1, end) + '</div>';
+                            index = end + 1;
                         }
+                    } else if (responseText.charAt(index) === '-' && responseText.charAt(index + 1) === ' ') {
+                        let end = responseText.indexOf('\n', index);
+                        if (end !== -1) {
+                            botMessage.innerHTML += '<div class="normal-text">• ' + responseText.slice(index + 2, end) + '</div>';
+                            index = end + 1;
+                        }
+                    } else {
+                        botMessage.innerHTML += responseText.charAt(index);
+                        index++;
                     }
+                    setTimeout(typeMessage, typingSpeed);
 
-                    typeMessage();
-                });
-
-                document.getElementById('user-input').value = '';
-            }
-
-            function handleKeyPress(event) {
-                if (event.key === 'Enter') {
-                    sendMessage();
+                    if (chatBox.scrollTop + chatBox.clientHeight >= chatBox.scrollHeight - 10) {
+                        chatBox.scrollTop = chatBox.scrollHeight;
+                    }
                 }
             }
 
-            document.getElementById('user-input').addEventListener('keypress', handleKeyPress);
-
-            document.querySelector('.input-container button').addEventListener('click', sendMessage); // Ensure the SEND button works
-
-            function loadChatHistory() {
-                fetch('/chat-history')
-                    .then(response => response.json())
-                    .then(data => {
-                        chatHistory.innerHTML = '';
-                        data.history.forEach((item, index) => {
-                            let historyItem = document.createElement('div');
-                            historyItem.className = 'chat-history-item';
-                            historyItem.textContent = item.title || `Chat ${index + 1}`;
-                            historyItem.addEventListener('click', () => {
-                                loadChat(item.id);
-                            });
-                            historyItem.addEventListener('touchend', () => { // Handle touch events
-                                loadChat(item.id);
-                            });
-                            chatHistory.appendChild(historyItem);
-                        });
-                    });
-            }
-
-            function loadChat(chatId) {
-                fetch(`/chat/${chatId}`)
-                    .then(response => response.json())
-                    .then(data => {
-                        const chatBox = document.getElementById('chat-box');
-                        chatBox.innerHTML = '';
-                        data.messages.forEach(message => {
-                            let messageElement = document.createElement('div');
-                            messageElement.className = `message ${message.sender}-message`;
-                            messageElement.textContent = message.text;
-                            chatBox.appendChild(messageElement);
-                        });
-                    });
-            }
+            typeMessage();
         });
+
+        document.getElementById('user-input').value = '';
+    }
+
+    function handleKeyPress(event) {
+        if (event.key === 'Enter') {
+            sendMessage();
+        }
+    }
+
+    document.getElementById('user-input').addEventListener('keypress', handleKeyPress);
+    document.querySelector('.input-container button').addEventListener('click', sendMessage);
+
+    function loadChatHistory() {
+        fetch('/chat-history')
+            .then(response => response.json())
+            .then(data => {
+                chatHistory.innerHTML = '';
+                data.history.forEach((item, index) => {
+                    let historyItem = document.createElement('div');
+                    historyItem.className = 'chat-history-item';
+                    historyItem.textContent = item.title || `Chat ${index + 1}`;
+                    historyItem.addEventListener('click', () => {
+                        loadChat(item.id);
+                    });
+                    historyItem.addEventListener('touchend', () => {
+                        loadChat(item.id);
+                    });
+                    chatHistory.appendChild(historyItem);
+                });
+            });
+    }
+
+    function loadChat(chatId) {
+        fetch(`/chat/${chatId}`)
+            .then(response => response.json())
+            .then(data => {
+                const chatBox = document.getElementById('chat-box');
+                chatBox.innerHTML = '';
+                data.messages.forEach(message => {
+                    let messageElement = document.createElement('div');
+                    messageElement.className = `message ${message.sender}-message`;
+                    messageElement.textContent = message.text;
+                    chatBox.appendChild(messageElement);
+                });
+            });
+    }
+
+    window.submitForm = submitForm;
+
+    // Show reminder when the chatbot is opened
+    showReminder();
+});
+
     </script>
 </body>
 </html>
